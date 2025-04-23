@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Schachspiel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/css/chessboard.min.css">
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
+    #board { width: 400px; margin: 0 auto; }
+    #status { text-align: center; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center;">Schach gegen dich selbst</h1>
+  <div id="board"></div>
+  <div id="status"></div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/js/chessboard.min.js"></script>
+  <script>
+    const board = Chessboard('board', {
+      draggable: true,
+      position: 'start',
+      onDrop: onDrop
+    });
+    const game = new Chess();
+
+    function onDrop(source, target) {
+      const move = game.move({ from: source, to: target, promotion: 'q' });
+      if (move === null) return 'snapback';
+      updateStatus();
+    }
+
+    function updateStatus() {
+      let status = '';
+      if (game.in_checkmate()) {
+        status = 'Schachmatt!';
+      } else if (game.in_draw()) {
+        status = 'Unentschieden';
+      } else {
+        status = 'Zug: ' + (game.turn() === 'w' ? 'Weiß' : 'Schwarz');
+        if (game.in_check()) status += ' (Schach)';
+      }
+      document.getElementById('status').innerText = status;
+    }
+
+    updateStatus();
+  </script>
+</body>
+</html>
